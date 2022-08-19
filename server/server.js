@@ -4,8 +4,11 @@ const router = require("./routes");
 const bodyParser = require("body-parser");
 const cookieParser = require("cookie-parser");
 const dotenv = require("dotenv");
+global.logger || (global.logger = require("./modules/winton"));
+const morgan = require("./middlewares/morgan.js");
 dotenv.config();
 
+app.use(morgan);
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 app.use(cookieParser());
@@ -21,11 +24,11 @@ app.use((req, res, next) => {
 });
 
 app.use((err, req, res, next) => {
-  console.error(err.stack);
+  logger.error(err.stack);
   res.status(500).json({ status: "failed", message: err.message});
 });
 
 const port = process.env.SERVER_PORT || 3003;
 app.listen(port, () => {
-    console.info(`Server ON PORT=${port}`);
+    logger.info(`Server ON PORT=${port}`);
 });
