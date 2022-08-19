@@ -1,0 +1,12 @@
+<table>
+    <tbody>
+        <th>No</th>
+        <th>Nickname</th>
+        <% for(var i in users){ %>
+            <tr>
+                <td><%= users[i].user_id %></td>
+                <td><%= users[i].nickname %></td>
+            </tr>
+        <% }%>
+    </tbody>
+</table>
