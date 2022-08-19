@@ -10,17 +10,17 @@ var pool = mysql2.createPool({
     port: process.env.DB_PORT,
 });
 
-pool.getConnection((err, connection) => {
-    let createTableUsers = `
-        CREATE TABLE IF NOT EXISTS users(
-            user_id VARCHAR(20) NOT NULL,
-            password VARCHAR(100) NOT NULL,
-            nickname VARCHAR(10) NOT NULL,
-            PRIMARY KEY(user_id))
-    `;
-    connection.query(createTableUsers, (err, result) => {
-        if (err) throw err; 
-    });
-})
+// pool.getConnection((err, connection) => {
+//     let createTableUsers = `
+//         CREATE TABLE IF NOT EXISTS users(
+//             user_id VARCHAR(20) NOT NULL,
+//             password VARCHAR(100) NOT NULL,
+//             nickname VARCHAR(10) NOT NULL,
+//             PRIMARY KEY(user_id))
+//     `;
+//     connection.query(createTableUsers, (err, result) => {
+//         if (err) throw err; 
+//     });
+// })
 
 module.exports = pool;

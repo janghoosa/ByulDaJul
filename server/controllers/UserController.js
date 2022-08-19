@@ -5,7 +5,8 @@ const Views = '../views/'
 const data = {
     getUserList: async (req, res, next) => {
         const response = await User.getAllUser().then((results) => {
-            res.render(Views + 'index.ejs', {users:results});
+            // res.render(Views + 'index.ejs', {users:results});
+            res.send(results);
         })
     }
 }

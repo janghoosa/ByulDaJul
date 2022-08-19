@@ -8,9 +8,9 @@ morgan.token("status", function (req, res) {
     else if (res.statusCode < 400) color = "\x1B[36m"; //cyan
     else if (res.statusCode < 500) color = "\x1B[33m"; //yellow
     else if (res.statusCode < 600) color = "\x1B[31m"; //red
-    else color = "\033[0m"; /*글자색 초기화*/
+    else color = "\x1B[0m"; /*글자색 초기화*/
 
-    return color + res.statusCode + "\033[0m";
+    return color + res.statusCode + "\x1B[0m";
 });
 
 morgan.token("request", (req, res) => {
