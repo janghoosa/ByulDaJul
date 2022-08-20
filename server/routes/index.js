@@ -15,7 +15,11 @@ router.get("/user/:user_id", (req, res, next) => {
 });
 
 router.post("/signIn", (req, res, next) => {
-    userController.data.signIn(req, res, next);
+    userController.process.signIn(req, res, next);
+})
+
+router.post("/signUp", (req, res, next) => {
+    userController.process.signUp(req, res, next);
 })
 
 module.exports = router;

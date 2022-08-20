@@ -1,6 +1,8 @@
 const User = require("../models/User");
 const logger = require("../modules/winton");
+const bcrypt = require("bcrypt");
 const Views = "../views/";
+const saltRounds = 10;
 
 const data = {
     getUserList: async (req, res, next) => {
@@ -24,36 +26,56 @@ const data = {
                 next(err);
             });
     },
+};
+
+const process = {
     signIn: async (req, res, next) => {
         let user_id = req.body.user_id;
         let user_pw = req.body.user_pw;
+        logger.info(JSON.stringify(req.body));
         if (user_id == null || user_pw == null) {
-            res.send("No request body");
-            next();
+            res.json({ results: false, message: "No request body" });
+            return;
         }
         const response = await User.signIn(user_id)
             .then((results) => {
                 if (results.user_id === user_id) {
-                    if (results.password === user_pw) {
-                        logger.info("Sign In Success")
-                        res.json({results:true})
+                    if (bcrypt.compareSync(user_pw, results.password)) {
+                        logger.info("Sign In Success");
+                        res.json({ results: true });
+                    } else {
+                        logger.error("pw not equal");
+                        res.json({ results: false });
                     }
-                    else {
-                        logger.error("pw not equal")
-                        res.json({results:false})
-                    }
-                }
-                else {
-                    logger.error("id not equal")
-                    res.json({results:false})
+                } else {
+                    logger.error("id not equal");
+                    res.json({ results: false });
                 }
             })
             .catch((err) => {
                 next(err);
+            });
+    },
+    signUp: async (req, res, next) => {
+        let user_info = req.body;
+        logger.info(JSON.stringify(req.body));
+        let ecryptPW = bcrypt.hashSync(user_info.user_pw, saltRounds);
+        Object.assign(user_info, { ecryptPW: ecryptPW });
+        if (user_info == null) {
+            res.json({ results: false, message: "No request body" });
+            return;
+        }
+        const response = await User.signUp(user_info)
+            .then((results) => {
+                res.send(results);
             })
-    }
+            .catch((err) => {
+                next(err);
+            });
+    },
 };
 
 module.exports = {
     data,
+    process,
 };
