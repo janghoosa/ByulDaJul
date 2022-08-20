@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "jest --setupFiles dotenv/config --forceExit --detectOpenHandles",
+    "start": "nodemon server.js start"
   },
   "repository": {
     "type": "git",
@@ -18,9 +19,21 @@
   "homepage": "https://github.com/kkjsw17/bimkathon#readme",
   "dependencies": {
     "bcrypt": "^5.0.1",
+    "body-parser": "^1.20.0",
     "cookie-parser": "^1.4.6",
     "dotenv": "^16.0.1",
+    "ejs": "^3.1.8",
     "express": "^4.18.1",
-    "mysql2": "^2.3.3"
+    "moment": "^2.29.4",
+    "moment-timezone": "^0.5.34",
+    "morgan": "^1.10.0",
+    "mysql2": "^2.3.3",
+    "nodemon": "^2.0.19",
+    "winston": "^3.8.1",
+    "winston-daily-rotate-file": "^4.7.1"
+  },
+  "devDependencies": {
+    "jest": "^28.1.3",
+    "supertest": "^6.2.4"
   }
 }
