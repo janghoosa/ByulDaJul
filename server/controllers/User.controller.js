@@ -46,7 +46,7 @@ const process = {
         }
         db.user
             .findOne({
-                attributes: ["no","id", "password"],
+                attributes: ["no", "id", "password"],
                 where: { id: id },
             })
             .then((results) => {
@@ -54,7 +54,7 @@ const process = {
                     res.json({ results: false, message: "No User" });
                     return;
                 }
-                user = JSON.parse(JSON.stringify(results))
+                user = JSON.parse(JSON.stringify(results));
                 if (user.id === id) {
                     if (bcrypt.compareSync(user_pw, user.password)) {
                         logger.info("Sign In Success");
