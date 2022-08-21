@@ -10,6 +10,7 @@ const session = require("express-session");
 const sessionStore = require("./config/sessionStore");
 const db = require("./models");
 dotenv.config();
+const path = require("path");
 
 app.use(morgan);
 app.use(bodyParser.urlencoded({ extended: true }));
