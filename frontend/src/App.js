@@ -22,14 +22,9 @@ function App() {
   };
 
   const logout = async () => {
-    await axios.post(process.env.REACT_APP_API_SIGN_OUT, {}, { withCredentials: true })
-    .then((response) => {
-      if (response.data.results) {
-        window.localStorage.setItem("isLogin", false);
-        window.localStorage.setItem("userID", JSON.stringify(""));
-        window.location.href = "/login";
-      }
-    });
+    window.localStorage.setItem("isLogin", false);
+    window.localStorage.setItem("userID", JSON.stringify(""));
+    window.location.href = "/login";
   };
 
   return (

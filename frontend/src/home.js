@@ -147,21 +147,35 @@ const Home = ({logout}) => {
           height="6vh"
           borderBottom="1px solid black"
           sx={{
-            paddingX: 2,
+            // paddingLeft: 1,
+            paddingRight: 2,
             display: "flex",
             alignItems: "center"
           }}
         >
-          <Grid item xs={4}>
-            <Typography
+          <Grid item xs={3} height="100%">
+            <img
+              alt="Under development"
+              src="/images/logo.png"
               style={{
-                fontSize: "16px"
+                height: "100%"
+              }}
+            />
+          </Grid>
+          <Grid item xs={6} />
+          <Grid item xs={1}>
+              <Typography
+              style={{
+                textAlign: "right",
+                fontSize: "22px",
+                fontWeight: "700",
+                paddingRight: "20px"
               }}
             >
               {username}
             </Typography>
+
           </Grid>
-          <Grid item xs={6} />
           <Grid item xs={2}>
             <Button
               variant="contained"

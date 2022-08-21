@@ -43,6 +43,16 @@ const Login = ({login}) => {
         height="100vh"
       >
         <Container maxWidth="sm">
+          <img
+            alt="Under development"
+            src="/images/logo.png"
+            style={{
+                display: 'block',
+                maxWidth: '100%',
+                margin: '0 auto',
+            }}
+          />
+
           <Box
             marginBottom={2}
           >
