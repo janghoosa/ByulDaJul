@@ -107,6 +107,7 @@ const process = {
         req.session.destory((err) => {
             if (err) next(err);
             req.session = null;
+            res.clearCookie('connect.sid');
             res.redirect("/");
         });
     },
