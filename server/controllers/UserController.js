@@ -42,7 +42,12 @@ const process = {
                 if (results.user_id === user_id) {
                     if (bcrypt.compareSync(user_pw, results.password)) {
                         logger.info("Sign In Success");
-                        res.json({ results: true });
+                        req.session.user_id = results.user_id;
+                        req.session.isLogined = true;
+                        req.session.save(err => {
+                            if (err) next(err);
+                            res.json({ results: true });
+                        });
                     } else {
                         logger.error("pw not equal");
                         res.json({ results: false });

@@ -6,12 +6,25 @@ const cookieParser = require("cookie-parser");
 const dotenv = require("dotenv");
 global.logger || (global.logger = require("./modules/winton"));
 const morgan = require("./middlewares/morgan.js");
+const session = require("express-session");
+const sessionStore = require("./config/sessionStore");
 dotenv.config();
 
 app.use(morgan);
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 app.use(cookieParser());
+app.use(
+    session({
+        secret: "bimkerton",
+        resave: false,
+        saveUninitialized: true,
+        store: sessionStore,
+        cookie: {
+            maxAge : 60 * 60 * 1000
+        }
+    })
+);
 
 app.get("/", (req, res) => {
     res.send("Hello World!");
