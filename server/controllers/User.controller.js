@@ -24,7 +24,7 @@ const data = {
         db.user
             .findOne({
                 attributes: ["user_id", "username"],
-                where: { user_id: user_id },
+                where: { id: user_id },
             })
             .then((data) => {
                 res.send(data);

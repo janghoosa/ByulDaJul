@@ -49,7 +49,7 @@ exports.addHistoryMiddleWare = async (req, res, next) => {
             user_no: req.session.user_no,
         })
         .then((results) => {
-            res.json({ results: true });
+            res.json(req.body.data);
         })
         .catch((err) => {
             next(err);
