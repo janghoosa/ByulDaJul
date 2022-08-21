@@ -1,0 +1,5 @@
+{
+    "deploy_port": 5000,
+    "log_dir": "./logs"
+}
+  
