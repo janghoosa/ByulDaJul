@@ -22,4 +22,8 @@ router.post("/signUp", (req, res, next) => {
     userController.process.signUp(req, res, next);
 })
 
+router.post("/signOut", (req, res, next) => {
+    userController.data.getUserByID(req, res, next);
+});
+
 module.exports = router;

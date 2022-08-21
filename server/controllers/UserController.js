@@ -6,6 +6,7 @@ const saltRounds = 10;
 
 const data = {
     getUserList: async (req, res, next) => {
+        console.log(req.session);
         const response = await User.getAllUser()
             .then((results) => {
                 // res.render(Views + 'index.ejs', {users:results});
@@ -44,7 +45,7 @@ const process = {
                         logger.info("Sign In Success");
                         req.session.user_id = results.user_id;
                         req.session.isLogined = true;
-                        req.session.save(err => {
+                        req.session.save((err) => {
                             if (err) next(err);
                             res.json({ results: true });
                         });
@@ -77,6 +78,14 @@ const process = {
             .catch((err) => {
                 next(err);
             });
+    },
+    signOut: async (req, res, next) => {
+        console.log(req.session);
+        req.session.destory((err) => {
+            if (err) next(err);
+            req.session = null;
+            res.redirect("/");
+        });
     },
 };
 
