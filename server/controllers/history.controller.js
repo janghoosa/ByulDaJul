@@ -14,7 +14,7 @@ exports.getHistoryById = async (req, res, next) => {
                 return;
             }
             res.send(results);
-        })
+        });
 };
 
 exports.addHistory = async (req, res, next) => {
@@ -22,12 +22,31 @@ exports.addHistory = async (req, res, next) => {
         res.status(401).send("Please Login First!");
         return;
     }
-    console.log(req.body)
+    logger.info(JSON.stringify(req.body));
     db.history
         .create({
             input: req.body.input,
             output: req.body.output,
-            user_no: req.session.user_no
+            user_no: req.session.user_no,
+        })
+        .then((results) => {
+            res.json({ results: true });
+        })
+        .catch((err) => {
+            next(err);
+        });
+};
+
+exports.addHistoryMiddleWare = async (req, res, next) => {
+    if (!req.session.isLogined) {
+        req.session.user_no = 1;
+    }
+    logger.info(JSON.stringify(req.body.data));
+    db.history
+        .create({
+            input: req.body.data.user_input,
+            output: JSON.stringify(req.body.data.output),
+            user_no: req.session.user_no,
         })
         .then((results) => {
             res.json({ results: true });
