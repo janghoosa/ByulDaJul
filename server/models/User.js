@@ -32,5 +32,12 @@ module.exports = (sequelize, DataTypes) => {
             timestamps: true,
         }
     );
+    user.associate = (models) => {
+        user.hasMany(models.history, {
+            foreignKey: "user_no",
+            onDelete: "cascade",
+            allowNull: "false",
+        });
+    };
     return user;
 };
