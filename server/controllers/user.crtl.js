@@ -7,7 +7,10 @@ const saltRounds = 10;
 const data = {
     getUserList: async (req, res, next) => {
         db.user
-            .findAll()
+            .findAll({
+                attributes: [
+                "id","username","createdAt"
+            ]})
             .then((data) => {
                 res.send(data);
             })
@@ -23,7 +26,7 @@ const data = {
         }
         db.user
             .findOne({
-                attributes: ["user_id", "username"],
+                attributes: ["id", "username"],
                 where: { id: user_id },
             })
             .then((data) => {
@@ -46,7 +49,7 @@ const process = {
         }
         db.user
             .findOne({
-                attributes: ["no", "id", "password"],
+                attributes: ["no", "id", "password", "username"],
                 where: { id: id },
             })
             .then((results) => {
@@ -63,7 +66,7 @@ const process = {
                         req.session.isLogined = true;
                         req.session.save((err) => {
                             if (err) next(err);
-                            res.json({ results: true });
+                            res.json({ results: true, username: user.username });
                         });
                     } else {
                         logger.error("pw not equal");

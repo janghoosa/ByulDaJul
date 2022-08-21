@@ -1,8 +1,8 @@
 var express = require("express");
 var router = express.Router();
-var userController = require("../controllers/user.controller");
-var historyController = require("../controllers/history.controller");
-var pyServerController = require("../controllers/py-server.controller");
+var userController = require("../controllers/user.crtl");
+var historyController = require("../controllers/history.ctrl");
+var pyServerController = require("../controllers/py-server.ctrl");
 
 router.get("/user", userController.data.getUserList);
 router.get("/user/:user_id", userController.data.getUserByID);
