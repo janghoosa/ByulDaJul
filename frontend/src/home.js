@@ -12,7 +12,8 @@ import {
   TableHead,
   TablePagination,
   TableRow,
-  TextField
+  TextField,
+  Typography
 } from '@mui/material';
 import PropTypes from 'prop-types';
 import FirstPageIcon from '@mui/icons-material/FirstPage';
@@ -22,8 +23,8 @@ import LastPageIcon from '@mui/icons-material/LastPage';
 import { useTheme } from '@mui/material/styles';
 import styled from '@emotion/styled';
 import { useEffect, useState } from 'react';
-import { mockup } from './mockup';
 import axios from 'axios';
+import { Navigate } from 'react-router-dom';
 
 const TextFieldWrapper = styled(TextField)`
   fieldset {
@@ -92,14 +93,23 @@ TablePaginationActions.propTypes = {
   rowsPerPage: PropTypes.number.isRequired,
 };
 
-const Home = () => {
+const Home = ({logout}) => {
   const [source, setSource] = useState("");
   const [target, setTarget] = useState("");
+  const [description, setDescription] = useState([]);
   const [page, setPage] = useState(0);
+  const [inputHistory, setInputHistory] = useState([]);
   const [rowsPerPage, setRowsPerPage] = useState(5);
+  const username = window.localStorage.getItem("username");
 
   useEffect(() => {
-    document.title = "HOME"
+    document.title = "HOME";
+    axios
+      .get(process.env.REACT_APP_API_GET_HISTORY, { withCredentials: true })
+      .then((response) => {
+        console.log(response.data)
+        setInputHistory(response.data);
+      });
   }, []);
 
   const handleChangePage = (event, newPage) => {
@@ -112,154 +122,221 @@ const Home = () => {
   };
 
   const postText = async () => {
-    console.log(source)
     await axios.post(process.env.REACT_APP_API_TRANSLATE, {
       user_input: `${source}`
     })
     .then((response) => {
-      console.log(response)
       setTarget(response.data.output.result);
+      setDescription(response.data.output.description);
     });
   };
 
-
-  return (
-    <Box
-      component="main"
-      display="flex"
-      alignItems="center"
-      justifyContent="center"
-      height="100vh"
-    >
-      <Container>
-        <Grid container>
-          <Grid item xs={6}>
-            <TextFieldWrapper
-              id="translation-source"
-              label="신조어를 입력하세요."
-              value={source}
-              variant="outlined"
-              multiline
-              rows={6}
-              fullWidth
-              inputProps={{
-                style: {
-                  fontSize: "1.2rem",
-                }
+  if (window.localStorage.getItem("isLogin")) {
+    return (
+      <Box
+        component="main"
+        height="100vh"
+        display="flex"
+        flexDirection="column"
+      >
+        <Grid
+          container
+          height="6vh"
+          borderBottom="1px solid black"
+          sx={{
+            paddingX: 2,
+            display: "flex",
+            alignItems: "center"
+          }}
+        >
+          <Grid item xs={4}>
+            <Typography
+              style={{
+                fontSize: "16px"
               }}
-              onChange={e => setSource(e.target.value)}
-            />
+            >
+              {username}
+            </Typography>
           </Grid>
-          
-          <Grid item xs={6}>
-            <TextFieldWrapper
-              id="translation-target"
-              variant="outlined"
-              value={target}
-              multiline
-              rows={6}
+          <Grid item xs={6} />
+          <Grid item xs={2}>
+            <Button
+              variant="contained"
               fullWidth
-              inputProps={{
-                style: {
-                  fontSize: "1.2rem",
-                }
+              style={{
+                fontSize: "16px"
               }}
-            />
+              onClick={logout}
+            >
+              로그아웃
+            </Button>
           </Grid>
         </Grid>
 
         <Box
           display="flex"
-          justifyContent="flex-end"
-          mt={1.2}
+          alignItems="center"
+          justifyContent="center"
+          height="94vh"
         >
-          <Grid container spacing={1} width="200px">
-            <Grid item xs={6}>
-              <Button
-                variant="outlined"
-                fullWidth
-                style={{
-                  fontSize: "16px"
-                }}
-              >
-                클리어
-              </Button>
+          <Container>
+            <Grid container>
+              <Grid item xs={6}>
+                <TextFieldWrapper
+                  id="translation-source"
+                  label="신조어를 입력하세요."
+                  value={source}
+                  variant="outlined"
+                  multiline
+                  rows={6}
+                  fullWidth
+                  inputProps={{
+                    style: {
+                      fontSize: "1.2rem",
+                    }
+                  }}
+                  onChange={e => setSource(e.target.value)}
+                />
+              </Grid>
+              
+              <Grid item xs={6}>
+                <TextFieldWrapper
+                  id="translation-target"
+                  variant="outlined"
+                  value={target}
+                  multiline
+                  rows={6}
+                  fullWidth
+                  inputProps={{
+                    style: {
+                      fontSize: "1.2rem",
+                    }
+                  }}
+                />
+              </Grid>
             </Grid>
+    
+            <Box
+              display="flex"
+              justifyContent="flex-end"
+              mt={1.2}
+            >
+              <Grid container spacing={1} width="200px">
+                <Grid item xs={6}>
+                  <Button
+                    variant="outlined"
+                    fullWidth
+                    style={{
+                      fontSize: "16px"
+                    }}
+                    onClick={() => {
+                      setSource("");
+                      setTarget("");
+                      setDescription([]);
+                    }}
+                  >
+                    클리어
+                  </Button>
+                </Grid>
+    
+                <Grid item xs={6}>
+                  <Button
+                    variant="contained"
+                    fullWidth
+                    style={{
+                      fontSize: "16px"
+                    }}
+                    onClick={postText}
+                  >
+                    번역
+                  </Button>
+                </Grid>
+              </Grid>
+            </Box>
 
-            <Grid item xs={6}>
-              <Button
-                variant="contained"
-                fullWidth
-                style={{
-                  fontSize: "16px"
-                }}
-                onClick={postText}
-              >
-                번역
-              </Button>
-            </Grid>
-          </Grid>
-        </Box>
-
-        <TableContainer>
-          <Table stickyHeader>
-            <TableHead>
-              <TableRow>
-                <TableCell>시간</TableCell>
-                <TableCell>입력한 문장</TableCell>
-                <TableCell>번역된 문장</TableCell>
-              </TableRow>
-            </TableHead>
-
-            <TableBody>
-              {(rowsPerPage > 0
-                ? mockup.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                : mockup
-              ).map((item, i) => {
-                const date = `${item.createdAt.toLocaleDateString('ko-KR')} ${item.createdAt.toLocaleTimeString('ko-KR')}`;
+            <Box mx={1} mb={2.5}>
+              {description.map((item, i) => {
+                const key = Object.keys(item)[0];
 
                 return (
-                  <TableRow
-                    key={item.id}
-                  >
-                    <TableCell>
-                      {date}
-                    </TableCell>
-                    <TableCell>
-                      {item.input}
-                    </TableCell>
-                    <TableCell>
-                      {item.output}
-                    </TableCell>
-                  </TableRow>
-                );
+                  <>
+                    <Typography
+                      fontSize="19px"
+                      fontWeight="600"
+                    >
+                      {`- ${Object.keys(item)[0]}: ${item[key]}`}
+                    </Typography>
+                  </>
+                )
               })}
-            </TableBody>
-            <TableFooter>
-              <TableRow>
-                <TablePagination
-                  rowsPerPageOptions={[5, 10, 25, { label: 'All', value: -1 }]}
-                  colSpan={3}
-                  count={mockup.length}
-                  rowsPerPage={rowsPerPage}
-                  page={page}
-                  SelectProps={{
-                    inputProps: {
-                      'aria-label': 'rows per page',
-                    },
-                    native: true,
-                  }}
-                  onPageChange={handleChangePage}
-                  onRowsPerPageChange={handleChangeRowsPerPage}
-                  ActionsComponent={TablePaginationActions}
-                />
-              </TableRow>
-            </TableFooter>
-          </Table>
-        </TableContainer>
-      </Container>
-    </Box>
-  );
+            </Box>
+    
+            <TableContainer>
+              <Table stickyHeader>
+                <TableHead>
+                  <TableRow>
+                    <TableCell>시간</TableCell>
+                    <TableCell>입력한 문장</TableCell>
+                    <TableCell>번역된 문장</TableCell>
+                  </TableRow>
+                </TableHead>
+    
+                <TableBody>
+                  {(rowsPerPage > 0
+                    ? inputHistory.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                    : inputHistory
+                  ).map((item, i) => {
+                    const date = new Date(item.createdAt);
+                    const gen_date = `${date.toLocaleDateString('ko-KR')} ${date.toLocaleTimeString('ko-KR')}`;
+    
+                    return (
+                      <TableRow
+                        key={item.id}
+                      >
+                        <TableCell>
+                          {gen_date}
+                        </TableCell>
+                        <TableCell>
+                          {item.input}
+                        </TableCell>
+                        <TableCell>
+                          {JSON.parse(item.output)["result"]}
+                        </TableCell>
+                      </TableRow>
+                    );
+                  })}
+                </TableBody>
+                <TableFooter>
+                  <TableRow>
+                    <TablePagination
+                      rowsPerPageOptions={[5, 10, 25, { label: 'All', value: -1 }]}
+                      colSpan={3}
+                      count={inputHistory.length}
+                      rowsPerPage={rowsPerPage}
+                      page={page}
+                      SelectProps={{
+                        inputProps: {
+                          'aria-label': 'rows per page',
+                        },
+                        native: true,
+                      }}
+                      onPageChange={handleChangePage}
+                      onRowsPerPageChange={handleChangeRowsPerPage}
+                      ActionsComponent={TablePaginationActions}
+                    />
+                  </TableRow>
+                </TableFooter>
+              </Table>
+            </TableContainer>
+          </Container>
+        </Box>
+      </Box>
+    );
+  } else {
+    return (
+      <Navigate to="/login" />
+    )
+  }
 };
 
 export default Home;
