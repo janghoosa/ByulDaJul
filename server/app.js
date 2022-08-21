@@ -19,12 +19,12 @@ app.use(
     session({
         secret: "bimkerton",
         resave: false,
-        saveUninitialized: true,
+        saveUninitialized: false,
         store: sessionStore,
     })
 );
+app.use(express.static(path.join(__dirname, "../frontend/build")));
 db.sequelize.sync();
-
 app.get("/", (req, res) => {
     res.send("Hello World!");
 });
