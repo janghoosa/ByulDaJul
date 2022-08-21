@@ -1,7 +1,7 @@
-module.exports = (sequelize, DataTypes) => {
-    const user = sequelize.define(
-        "user",
-        {
+"use strict";
+module.exports = {
+    up: (queryInterface, DataTypes) => {
+        return queryInterface.createTable("users", {
             no: {
                 type: DataTypes.INTEGER,
                 allowNull: false,
@@ -21,12 +21,9 @@ module.exports = (sequelize, DataTypes) => {
                 allowNull: false,
                 default: false,
             },
-        },
-        {
-            sequelize,
-            tableName: "users",
-            timestamps: true,
-        }
-    );
-    return user;
+        });
+    },
+    down: (queryInterface, DataTypes) => {
+        return queryInterface.dropTable("users");
+    },
 };
