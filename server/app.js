@@ -23,7 +23,8 @@ app.use(
         store: sessionStore,
     })
 );
-app.use(express.static(path.join(__dirname, "../frontend/build")));
+var root = path.resolve(__dirname, '../frontend/build');
+app.use(express.static(root));
 db.sequelize.sync();
 app.get("/", (req, res) => {
     res.send("Hello World!");
@@ -31,10 +32,7 @@ app.get("/", (req, res) => {
 
 app.use("/apis", router);
 
-app.use((req, res, next) => {
-    res.status(404).send("Sorry, This page is 404!");
-});
-
+app.get('*', (req, res) => { res.sendFile(path.join(root, "index.html")) });
 app.use((err, req, res, next) => {
     logger.error(err.stack);
     res.status(500).json({ status: "failed", message: err.message });
