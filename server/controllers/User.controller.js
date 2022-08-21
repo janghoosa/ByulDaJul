@@ -46,7 +46,7 @@ const process = {
         }
         db.user
             .findOne({
-                attributes: ["id", "password"],
+                attributes: ["no","id", "password"],
                 where: { id: id },
             })
             .then((results) => {
@@ -58,6 +58,7 @@ const process = {
                 if (user.id === id) {
                     if (bcrypt.compareSync(user_pw, user.password)) {
                         logger.info("Sign In Success");
+                        req.session.user_no = user.no;
                         req.session.user_id = user.id;
                         req.session.isLogined = true;
                         req.session.save((err) => {
