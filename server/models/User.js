@@ -6,9 +6,13 @@ module.exports = (sequelize, DataTypes) => {
                 type: DataTypes.INTEGER,
                 allowNull: false,
                 primaryKey: true,
-                autoIncreament: true,
+                autoIncrement: true,
             },
-            user_id: {
+            id: {
+                type: DataTypes.STRING,
+                allowNull: false,
+            },
+            password: {
                 type: DataTypes.STRING,
                 allowNull: false,
             },
@@ -19,7 +23,7 @@ module.exports = (sequelize, DataTypes) => {
             deleted: {
                 type: DataTypes.BOOLEAN,
                 allowNull: false,
-                default: false,
+                defaultValue: false,
             },
         },
         {

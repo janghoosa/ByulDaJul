@@ -6,7 +6,7 @@
   "scripts": {
     "test": "jest --setupFiles dotenv/config --forceExit --detectOpenHandles",
     "start": "nodemon server.js start",
-    "sequelize": "sequelize --options-path=src/db/config/options.js"
+    "migrate": "sequelize --options-path=src/db/config/options.js db:migrate"
   },
   "repository": {
     "type": "git",
