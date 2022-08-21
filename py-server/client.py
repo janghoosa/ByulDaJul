@@ -36,7 +36,7 @@ def translate(inputs: ItemForTranslation):
     logger.info(f"User Inputs : {data['user_input']}")
 
     try:
-        data["output"] = model.correct_spelling(data['user_input'])
+        data["output"] = model.replace_slang(data['user_input'])
         logger.info(f"Translated Outputs : {data['output']}")
     except Exception as e:
         data["error"] = str(e)
@@ -46,7 +46,7 @@ def translate(inputs: ItemForTranslation):
 
 if __name__ == "__main__":    
     parser = ArgumentParser()
-    parser.add_argument("--config", type=str, default='asset/config.json')
+    parser.add_argument("--config", type=str, default='assets/config.json')
     parsed = parser.parse_args()
 
     config_path = parsed.config
