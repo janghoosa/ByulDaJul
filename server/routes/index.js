@@ -1,29 +1,15 @@
 var express = require("express");
 var router = express.Router();
-var userController = require("../controllers/UserController");
+var userController = require("../controllers/User.controller");
 
-router.get("/main", (req, res, next) => {
-    res.send("main");
-});
+router.get("/user", userController.data.getUserList);
 
-router.get("/user", (req, res, next) => {
-    userController.data.getUserList(req, res, next);
-});
+router.get("/user/:user_id", userController.data.getUserByID);
 
-router.get("/user/:user_id", (req, res, next) => {
-    userController.data.getUserByID(req, res, next);
-});
+router.post("/signIn", userController.process.signIn);
 
-router.post("/signIn", (req, res, next) => {
-    userController.process.signIn(req, res, next);
-})
+router.post("/signUp", userController.process.signUp);
 
-router.post("/signUp", (req, res, next) => {
-    userController.process.signUp(req, res, next);
-})
-
-router.post("/signOut", (req, res, next) => {
-    userController.data.getUserByID(req, res, next);
-});
+router.post("/signOut", userController.data.getUserByID);
 
 module.exports = router;

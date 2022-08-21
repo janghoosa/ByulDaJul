@@ -8,6 +8,7 @@ global.logger || (global.logger = require("./modules/winton"));
 const morgan = require("./middlewares/morgan.js");
 const session = require("express-session");
 const sessionStore = require("./config/sessionStore");
+const db = require("./models");
 dotenv.config();
 
 app.use(morgan);
@@ -22,6 +23,7 @@ app.use(
         store: sessionStore,
     })
 );
+db.sequelize.sync();
 
 app.get("/", (req, res) => {
     res.send("Hello World!");

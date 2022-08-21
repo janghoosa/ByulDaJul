@@ -1,4 +1,4 @@
-const User = require("../models/User");
+const db = require("../models");
 const logger = require("../modules/winton");
 const bcrypt = require("bcrypt");
 const Views = "../views/";
@@ -6,11 +6,10 @@ const saltRounds = 10;
 
 const data = {
     getUserList: async (req, res, next) => {
-        console.log(req.session);
-        const response = await User.getAllUser()
-            .then((results) => {
-                // res.render(Views + 'index.ejs', {users:results});
-                res.send(results);
+        db.user
+            .findAll()
+            .then((data) => {
+                res.send(data);
             })
             .catch((err) => {
                 next(err);
@@ -18,10 +17,17 @@ const data = {
     },
     getUserByID: async (req, res, next) => {
         let user_id = req.params.user_id;
-        // logger.info(JSON.stringify(req.query))
-        const response = await User.getUserById(user_id)
-            .then((results) => {
-                res.send(results);
+        if (!user_id) {
+            res.json({ results: false, message: "No request params" });
+            return;
+        }
+        db.user
+            .findOne({
+                attributes: ["user_id", "username"],
+                where: { user_id: user_id },
+            })
+            .then((data) => {
+                res.send(data);
             })
             .catch((err) => {
                 next(err);
@@ -31,19 +37,28 @@ const data = {
 
 const process = {
     signIn: async (req, res, next) => {
-        let user_id = req.body.user_id;
+        let id = req.body.user_id;
         let user_pw = req.body.user_pw;
         logger.info(JSON.stringify(req.body));
-        if (user_id == null || user_pw == null) {
+        if (!id || !user_pw) {
             res.json({ results: false, message: "No request body" });
             return;
         }
-        const response = await User.signIn(user_id)
+        db.user
+            .findOne({
+                attributes: ["id", "password"],
+                where: { id: id },
+            })
             .then((results) => {
-                if (results.user_id === user_id) {
-                    if (bcrypt.compareSync(user_pw, results.password)) {
+                if (!results) {
+                    res.json({ results: false, message: "No User" });
+                    return;
+                }
+                user = JSON.parse(JSON.stringify(results))
+                if (user.id === id) {
+                    if (bcrypt.compareSync(user_pw, user.password)) {
                         logger.info("Sign In Success");
-                        req.session.user_id = results.user_id;
+                        req.session.user_id = user.id;
                         req.session.isLogined = true;
                         req.session.save((err) => {
                             if (err) next(err);
@@ -65,15 +80,19 @@ const process = {
     signUp: async (req, res, next) => {
         let user_info = req.body;
         logger.info(JSON.stringify(req.body));
-        let ecryptPW = bcrypt.hashSync(user_info.user_pw, saltRounds);
-        Object.assign(user_info, { ecryptPW: ecryptPW });
+        let encryptPW = bcrypt.hashSync(user_info.user_pw, saltRounds);
         if (user_info == null) {
             res.json({ results: false, message: "No request body" });
             return;
         }
-        const response = await User.signUp(user_info)
+        db.user
+            .create({
+                id: user_info.user_id,
+                password: encryptPW,
+                username: user_info.username,
+            })
             .then((results) => {
-                res.send(results);
+                res.json({ results: true });
             })
             .catch((err) => {
                 next(err);
