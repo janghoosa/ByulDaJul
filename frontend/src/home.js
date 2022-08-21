@@ -107,7 +107,6 @@ const Home = ({logout}) => {
     axios
       .get(process.env.REACT_APP_API_GET_HISTORY, { withCredentials: true })
       .then((response) => {
-        console.log(response.data)
         setInputHistory(response.data);
       });
   }, []);
@@ -128,6 +127,10 @@ const Home = ({logout}) => {
     .then((response) => {
       setTarget(response.data.output.result);
       setDescription(response.data.output.description);
+      axios.get(process.env.REACT_APP_API_GET_HISTORY, { withCredentials: true })
+      .then((response) => {
+        setInputHistory(response.data);
+      });
     });
   };
 
