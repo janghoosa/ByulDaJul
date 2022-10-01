@@ -52,7 +52,10 @@ npm start
 
 ## Run node.js server
 ```
-python py-server/client.py
+cd server
+npm install
+# 환경변수 설정
+npm start
 ```
 
 ### Run python server
